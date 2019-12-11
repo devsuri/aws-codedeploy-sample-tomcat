@@ -48,6 +48,11 @@ pipeline {
 			    if (env.RELEASE_SCOPE == "AWSCodeDeploy")
 		    {
 			    echo "execute AWSCodeDeploy"
+			    step([$class: 'AWSCodeDeployPublisher', applicationName: 'CodeDeploy', awsAccessKey: 'awsAccessKey', awsSecretKey: 'awsSecretKey', 
+				  credentials: 'awsAccessKey', deploymentGroupAppspec: false, deploymentGroupName: '', 
+				  deploymentMethod: 'deploy', excludes: '', iamRoleArn: '', includes: '**', proxyHost: '', 
+				  proxyPort: 0, region: 'ap-northeast-1', s3bucket: '', s3prefix: '', subdirectory: '', 
+				  versionFileName: '', waitForCompletion: false])
 		    
 		    }
 		}
