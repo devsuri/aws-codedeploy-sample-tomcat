@@ -38,7 +38,7 @@ pipeline {
 			    if (env.RELEASE_SCOPE == "Shell")
 		    {
 			    echo "execute Shell"
-			    sshagent(['dev-server']) {
+			//    sshagent(['dev-server']) {
                     //sh "rsync -ivhr $WORKSPACE/ServiceInterface/bin/ -e 'ssh -o StrictHostKeyChecking=no' '${env.devsfws}':'/usr/share/nginx/www/DevRubyWS/bin/'"
                     //sh "ssh -o StrictHostKeyChecking=no '${env.devsfws}' 'sudo chmod +x /usr/share/nginx/www/DevRubyWS/bin'"
                 //}
