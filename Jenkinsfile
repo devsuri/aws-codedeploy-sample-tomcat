@@ -48,12 +48,13 @@ pipeline {
 			    if (env.RELEASE_SCOPE == "AWSCodeDeploy")
 		    {
 			    echo "execute AWSCodeDeploy"
+			    build job: 'AWSCodeDeploy'
 			    /*step([$class: 'AWSCodeDeployPublisher', applicationName: 'CodeDeploy', awsAccessKey: 'awsAccessKey', awsSecretKey: 'awsSecretKey', 
 				  credentials: 'awsAccessKey', deploymentGroupAppspec: false, deploymentGroupName: '', 
 				  deploymentMethod: 'deploy', excludes: '', iamRoleArn: '', includes: '**', proxyHost: '', 
 				  proxyPort: 0, region: 'ap-northeast-1', s3bucket: '', s3prefix: '', subdirectory: '', 
 				  versionFileName: '', waitForCompletion: false])*/
-			    step([$class: 'AWSCodeDeployPublisher', applicationName: 'CodeDeploy', awsAccessKey: 'awsAccessKey', awsSecretKey: 'awsSecretKey', credentials: 'AKIAVIEHYQDYLRADT74Q (AWSKEY)', deploymentGroupAppspec: false, deploymentGroupName: 'codedeploygroup', deploymentMethod: 'CodeDeployDefault.AllAtOnce', excludes: '', iamRoleArn: '', includes: '**', proxyPort: 0, region: ‘us-east-1’, s3bucket: 'aws-code-deploy-test-jenkins'])
+			    //step([$class: 'AWSCodeDeployPublisher', applicationName: 'CodeDeploy', awsAccessKey: 'awsAccessKey', awsSecretKey: 'awsSecretKey', credentials: 'AKIAVIEHYQDYLRADT74Q (AWSKEY)', deploymentGroupAppspec: false, deploymentGroupName: 'codedeploygroup', deploymentMethod: 'CodeDeployDefault.AllAtOnce', excludes: '', iamRoleArn: '', includes: '**', proxyPort: 0, region: ‘us-east-1’, s3bucket: 'aws-code-deploy-test-jenkins'])
 
 		    
 		    }
