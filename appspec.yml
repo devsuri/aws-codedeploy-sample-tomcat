@@ -5,6 +5,7 @@ files:
     destination: /tmp/codedeploy-deployment-staging-area/
   - source: index.html
     destination: /var/www/html/
+    overwrite: yes
 //  - source: /scripts/configure_http_port.xsl
 //    destination: /tmp/codedeploy-deployment-staging-area/
 //hooks:
