@@ -28,7 +28,7 @@ pipeline {
         }
 	stage("Release scope") {
             steps {
-          tep([$class: 'AWSCodeDeployPublisher', applicationName: 'CodeDeploy', awsAccessKey: '${env.AWS_ACCESS_KEY_ID}', awsSecretKey: '${env.AWS_SECRET_ACCESS_KEY_ID}', 
+          step([$class: 'AWSCodeDeployPublisher', applicationName: 'CodeDeploy', awsAccessKey: '${env.AWS_ACCESS_KEY_ID}', awsSecretKey: '${env.AWS_SECRET_ACCESS_KEY_ID}', 
 				  credentials: 'awsAccessKey', deploymentGroupAppspec: false, deploymentGroupName: 'codedeploygroup', 
 				  deploymentMethod: 'deploy', excludes: '', iamRoleArn: 'arn:aws:iam::361061974256:role/jenkins-awscodedeploy-s3', includes: '**', proxyHost: '', 
 				  proxyPort: 0, region: 'us-east-1', s3bucket: 'aws-code-deploy-test-jenkins', s3prefix: '', subdirectory: '', 
