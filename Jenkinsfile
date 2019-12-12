@@ -54,10 +54,10 @@ pipeline {
 				  deploymentMethod: 'deploy', excludes: '', iamRoleArn: '', includes: '**', proxyHost: '', 
 				  proxyPort: 0, region: 'ap-northeast-1', s3bucket: '', s3prefix: '', subdirectory: '', 
 				  versionFileName: '', waitForCompletion: false])*/
-			    withCredentials([[$class: 'AmazonWebServicesCredentialsBinding', credentialsId: 'aws-key', accessKeyVariable: 'AWS_ACCESS_KEY_ID', secretKeyVariable: 'AWS_SECRET_ACCESS_KEY']]) {
-				    sh 'echo $AWS_ACCESS_KEY_ID $AWS_SECRET_ACCESS_KEY'
-			    step([$class: 'AWSCodeDeployPublisher', applicationName: 'CodeDeploy', deploymentGroupName: 'codedeploygroup', awsAccessKey: '$AWS_ACCESS_KEY_ID', awsSecretKey: '$AWS_SECRET_ACCESS_KEY', deploymentMethod: 'CodeDeployDefault.AllAtOnce', includes: '**', proxyPort: 0, region: 'us-east-1', s3bucket: 'aws-code-deploy-test-jenkins'])
-			    }
+			   // withCredentials([[$class: 'AmazonWebServicesCredentialsBinding', credentialsId: 'aws-key', accessKeyVariable: 'AWS_ACCESS_KEY_ID', secretKeyVariable: 'AWS_SECRET_ACCESS_KEY']]) {
+			//    sh 'echo $AWS_ACCESS_KEY_ID $AWS_SECRET_ACCESS_KEY'
+			    step([$class: 'AWSCodeDeployPublisher', applicationName: 'CodeDeploy', deploymentGroupName: 'codedeploygroup', awsAccessKey: 'AWS Access Key', awsSecretKey: 'AWS Access Key', deploymentMethod: 'CodeDeployDefault.AllAtOnce', includes: '**', proxyPort: 0, region: 'us-east-1', s3bucket: 'aws-code-deploy-test-jenkins'])
+			  //  }
 		    
 		    }
 		}
