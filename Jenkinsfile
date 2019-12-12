@@ -52,7 +52,7 @@ pipeline {
 				  deploymentMethod: 'CodeDeployDefault.AllAtOnce', includes: '**', proxyHost: '', 
 				  proxyPort: 0, region: 'us-east-1', s3bucket: 'aws-code-deploy-test-jenkins'])  
 		    
-		    }
+		    }}
             }
         }
     
