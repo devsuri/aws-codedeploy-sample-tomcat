@@ -54,8 +54,9 @@ pipeline {
 				  deploymentMethod: 'deploy', excludes: '', iamRoleArn: '', includes: '**', proxyHost: '', 
 				  proxyPort: 0, region: 'ap-northeast-1', s3bucket: '', s3prefix: '', subdirectory: '', 
 				  versionFileName: '', waitForCompletion: false])*/
-			    step([$class: 'AWSCodeDeployPublisher', applicationName: 'CodeDeploy', credentials: 'aws-key', deploymentGroupAppspec: false, deploymentGroupName: 'codedeploygroup', deploymentMethod: 'CodeDeployDefault.AllAtOnce', includes: '**', proxyPort: 0, region: 'us-east-1', s3bucket: 'aws-code-deploy-test-jenkins'])
-
+			    withCredentials([[$class: 'AmazonWebServicesCredentialsBinding', accessKeyVariable: 'AWS_ACCESS_KEY_ID', credentialsId: 'aws-key', secretKeyVariable: 'AWS_SECRET_ACCESS_KEY']]) {
+			    step([$class: 'AWSCodeDeployPublisher', applicationName: 'CodeDeploy', deploymentGroupAppspec: false, deploymentGroupName: 'codedeploygroup', deploymentMethod: 'CodeDeployDefault.AllAtOnce', includes: '**', proxyPort: 0, region: 'us-east-1', s3bucket: 'aws-code-deploy-test-jenkins'])
+			    }
 		    
 		    }
 		}
