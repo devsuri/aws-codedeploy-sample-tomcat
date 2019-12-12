@@ -28,12 +28,31 @@ pipeline {
         }
 	stage("Release scope") {
             steps {
+                script {
+                    
+                    env.RELEASE_SCOPE = input message: 'User input required', ok: 'Release!',
+                            parameters: [choice(name: 'RELEASE_SCOPE', choices: ['Shell','AWSCodeDeploy'], description: 'What is the release scope?')]
+                //}
+                //echo "Release scope selected: ${env.RELEASE_SCOPE}"
+		    
+			    if (env.RELEASE_SCOPE == "Shell")
+		    {
+			    echo "execute Shell"
+			   sshagent(['dev-server']) {
+                    sh "rsync -ivhr $WORKSPACE/target/SampleMavenTomcatApp.war/ -e 'ssh -o StrictHostKeyChecking=no' '${env.codedeployserver}':'/tmp/'"
+                    //sh "ssh -o StrictHostKeyChecking=no '${env.devsfws}' 'sudo chmod +x /usr/share/nginx/www/DevRubyWS/bin'"
+                }
+		    }
+		    
+		    
+			    if (env.RELEASE_SCOPE == "AWSCodeDeploy")
+		    {
           step([$class: 'AWSCodeDeployPublisher', applicationName: 'CodeDeploy', awsAccessKey: '${env.AWS_ACCESS_KEY_ID}', awsSecretKey: '${env.AWS_SECRET_ACCESS_KEY_ID}', 
 				  deploymentGroupAppspec: false, deploymentGroupName: 'codedeploygroup', 
 				  deploymentMethod: 'CodeDeployDefault.AllAtOnce', includes: '**', proxyHost: '', 
 				  proxyPort: 0, region: 'us-east-1', s3bucket: 'aws-code-deploy-test-jenkins'])  
 		    
-		
+		    }
             }
         }
     
