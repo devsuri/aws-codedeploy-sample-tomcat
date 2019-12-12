@@ -39,8 +39,8 @@ pipeline {
 		    {
 			    echo "execute Shell"
 			   sshagent(['dev-server']) {
-                    //sh "rsync -ivhr $WORKSPACE/target/SampleMavenTomcatApp.war/ -e 'ssh -o StrictHostKeyChecking=no' '${env.codedeployserver}':'/tmp/'"
-                    sh "scp -o StrictHostKeyChecking=no -r $WORKSPACE/target/SampleMavenTomcatApp.war '${env.codedeployserver}':'/tmp/'"
+                    sh "rsync -ivhr $WORKSPACE/target/SampleMavenTomcatApp.war -e 'ssh -o StrictHostKeyChecking=no' '${env.codedeployserver}':'/tmp/shell/'"
+                    //sh "scp -o StrictHostKeyChecking=no -r $WORKSPACE/target/SampleMavenTomcatApp.war '${env.codedeployserver}':'/tmp/shell/'"
 				   //sh "ssh -o StrictHostKeyChecking=no '${env.devsfws}' 'sudo chmod +x /usr/share/nginx/www/DevRubyWS/bin'"
                 }
 		    }
