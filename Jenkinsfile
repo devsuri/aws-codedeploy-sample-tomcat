@@ -28,50 +28,17 @@ pipeline {
         }
 	stage("Release scope") {
             steps {
-                script {
-                    
-                    env.RELEASE_SCOPE = input message: 'User input required', ok: 'Release!',
-                            parameters: [choice(name: 'RELEASE_SCOPE', choices: ['Shell','AWSCodeDeploy'], description: 'What is the release scope?')]
-                //}
-                //echo "Release scope selected: ${env.RELEASE_SCOPE}"
+          tep([$class: 'AWSCodeDeployPublisher', applicationName: 'CodeDeploy', awsAccessKey: '${env.AWS_ACCESS_KEY_ID}', awsSecretKey: '${env.AWS_SECRET_ACCESS_KEY_ID}', 
+				  credentials: 'awsAccessKey', deploymentGroupAppspec: false, deploymentGroupName: 'codedeploygroup', 
+				  deploymentMethod: 'deploy', excludes: '', iamRoleArn: 'arn:aws:iam::361061974256:role/jenkins-awscodedeploy-s3', includes: '**', proxyHost: '', 
+				  proxyPort: 0, region: 'us-east-1', s3bucket: 'aws-code-deploy-test-jenkins', s3prefix: '', subdirectory: '', 
+				  versionFileName: '', waitForCompletion: false])  
 		    
-			    if (env.RELEASE_SCOPE == "Shell")
-		    {
-			    echo "execute Shell"
-			//    sshagent(['dev-server']) {
-                    //sh "rsync -ivhr $WORKSPACE/ServiceInterface/bin/ -e 'ssh -o StrictHostKeyChecking=no' '${env.devsfws}':'/usr/share/nginx/www/DevRubyWS/bin/'"
-                    //sh "ssh -o StrictHostKeyChecking=no '${env.devsfws}' 'sudo chmod +x /usr/share/nginx/www/DevRubyWS/bin'"
-                //}
-		    }
-		    
-		    
-			    if (env.RELEASE_SCOPE == "AWSCodeDeploy")
-		    {
-			    echo "execute AWSCodeDeploy"
-			   // build job: 'AWSCodeDeploy'
-			    /*step([$class: 'AWSCodeDeployPublisher', applicationName: 'CodeDeploy', awsAccessKey: 'awsAccessKey', awsSecretKey: 'awsSecretKey', 
-				  credentials: 'awsAccessKey', deploymentGroupAppspec: false, deploymentGroupName: '', 
-				  deploymentMethod: 'deploy', excludes: '', iamRoleArn: '', includes: '**', proxyHost: '', 
-				  proxyPort: 0, region: 'ap-northeast-1', s3bucket: '', s3prefix: '', subdirectory: '', 
-				  versionFileName: '', waitForCompletion: false])*/
-			   // withCredentials([[$class: 'AmazonWebServicesCredentialsBinding', credentialsId: 'aws-key', accessKeyVariable: 'AWS_ACCESS_KEY_ID', secretKeyVariable: 'AWS_SECRET_ACCESS_KEY']]) {
-			//    sh 'echo $AWS_ACCESS_KEY_ID $AWS_SECRET_ACCESS_KEY'
-			    step([$class: 'AWSCodeDeployPublisher', applicationName: 'CodeDeploy', deploymentGroupName: 'codedeploygroup', deploymentMethod: 'CodeDeployDefault.AllAtOnce', includes: '**', proxyPort: 0, region: 'us-east-1', s3bucket: 'aws-code-deploy-test-jenkins'])
-			  //  }
-		    
-		    }
-		}
+		
             }
         }
     
-        
-   
-	    
-	    
-	    
-	    
-	
-    }
+   }
 
     post {
         success {
