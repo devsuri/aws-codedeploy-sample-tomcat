@@ -31,7 +31,7 @@ pipeline {
                 script {
                     
                     env.RELEASE_SCOPE = input message: 'User input required', ok: 'Release!',
-                            parameters: [choice(name: 'RELEASE_SCOPE', choices: ['Shell','AWSCodeDeploy'], description: 'What is the release scope?')]
+                            parameters: [choice(name: 'RELEASE_SCOPE', choices: ['Shell','AWSCodeDeploy', 'AzureAppService'], description: 'What is the release scope?')]
                 //}
                 //echo "Release scope selected: ${env.RELEASE_SCOPE}"
 		    
@@ -48,12 +48,23 @@ pipeline {
 		    
 			    if (env.RELEASE_SCOPE == "AWSCodeDeploy")
 		    {
+			    echo "execute AWSCodeDeploy"
           step([$class: 'AWSCodeDeployPublisher', applicationName: 'CodeDeploy', awsAccessKey: '${env.AWS_ACCESS_KEY_ID}', awsSecretKey: '${env.AWS_SECRET_ACCESS_KEY_ID}', 
 				  deploymentGroupAppspec: false, deploymentGroupName: 'codedeploygroup', 
 				  deploymentMethod: 'CodeDeployDefault.AllAtOnce', includes: '**', proxyHost: '', 
 				  proxyPort: 0, region: 'us-east-1', s3bucket: 'aws-code-deploy-test-jenkins'])  
 		    
-		    }}
+		    }
+			
+			if (env.RELEASE_SCOPE == "AzureAppService")
+		    {
+			    echo "execute AzureAppService"
+			   azureWebAppPublish appName: 'codedeploy-appservice', azureCredentialsId: 'yourAzureServicePrincipalName', 
+				   dockerImageName: '', dockerImageTag: '', dockerRegistryEndpoint: [], filePath: 'SampleMavenTomcatApp.war', 
+				   publishType: 'file', resourceGroup: 'codedeploy', slotName: '', sourceDirectory: '', targetDirectory: ''
+                    
+		    }
+		}
             }
         }
     
