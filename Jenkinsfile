@@ -59,9 +59,9 @@ pipeline {
 			if (env.RELEASE_SCOPE == "AzureAppService")
 		    {
 			    echo "execute AzureAppService"
-			   azureWebAppPublish appName: 'codedeploy-appservice', azureCredentialsId: 'yourAzureServicePrincipalName', 
-				   filePath: 'SampleMavenTomcatApp.war', 
-				   publishType: 'file', resourceGroup: 'codedeploy'
+			   azureWebAppPublish appName: 'codedeploy-appservice', azureCredentialsId: 'yourAzureServicePrincipalName',  
+				   filePath: 'SampleMavenTomcatApp.war', publishType: 'file', resourceGroup: 'codedeploy', slotName: '', 
+				   sourceDirectory: 'target', targetDirectory: '/'
                     
 		    }
 		}
