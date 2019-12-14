@@ -60,8 +60,8 @@ pipeline {
 		    {
 			    echo "execute AzureAppService"
 			   azureWebAppPublish appName: 'codedeploy-appservice', azureCredentialsId: 'yourAzureServicePrincipalName', 
-				   dockerImageName: '', dockerImageTag: '', dockerRegistryEndpoint: [], filePath: 'SampleMavenTomcatApp.war', 
-				   publishType: 'file', resourceGroup: 'codedeploy', slotName: '', sourceDirectory: '', targetDirectory: ''
+				   filePath: 'SampleMavenTomcatApp.war', 
+				   publishType: 'file', resourceGroup: 'codedeploy'
                     
 		    }
 		}
