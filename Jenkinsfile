@@ -32,7 +32,7 @@ pipeline {
                     
                     env.RELEASE_SCOPE = input message: 'User input required', ok: 'Release!',
                             parameters: [choice(name: 'RELEASE_SCOPE', choices: ['Shell','AWSCodeDeploy', 'AzureAppService'], description: 'What is the release scope?')]
-                //}
+               
                 //echo "Release scope selected: ${env.RELEASE_SCOPE}"
 		    
 			    if (env.RELEASE_SCOPE == "Shell")
