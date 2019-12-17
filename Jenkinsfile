@@ -39,16 +39,16 @@ pipeline {
 			    if (env.RELEASE_SCOPE == "Shell")
 		    {
 			    echo "execute Shell"
-			    sh "terraform -v"
-			    export AWS_ACCESS_KEY_ID="${env.AWS_ACCESS_KEY_ID"
-			    export AWS_SECRET_ACCESS_KEY="${env.AWS_SECRET_ACCESS_KEY_ID}"
-			    sh "terraform apply --auto-approve"
-		//	   sshagent(['dev-server']) {
-		//   sh "/var/jenkins_home/workspace/backupscript/backup.sh"
-                //    sh "rsync -ivhr $WORKSPACE/target/SampleMavenTomcatApp.war -e 'ssh -o StrictHostKeyChecking=no' '${env.codedeployserver}':'/tmp/shell/'"
+			   // sh "terraform -v"
+			   // export AWS_ACCESS_KEY_ID="${env.AWS_ACCESS_KEY_ID"
+			   // export AWS_SECRET_ACCESS_KEY="${env.AWS_SECRET_ACCESS_KEY_ID}"
+			   // sh "terraform apply --auto-approve"
+			    	   sshagent(['dev-server']) {
+		   sh "/var/jenkins_home/workspace/backupscript/backup.sh"
+                    sh "rsync -ivhr $WORKSPACE/target/SampleMavenTomcatApp.war -e 'ssh -o StrictHostKeyChecking=no' '${env.codedeployserver}':'/tmp/shell/'"
                     //sh "scp -o StrictHostKeyChecking=no -r $WORKSPACE/target/SampleMavenTomcatApp.war '${env.codedeployserver}':'/tmp/shell/'"
 				  // //sh "ssh -o StrictHostKeyChecking=no '${env.devsfws}' 'sudo chmod +x /usr/share/nginx/www/DevRubyWS/bin'"
-              //  }
+                }
 		    }
 		    
 		    
