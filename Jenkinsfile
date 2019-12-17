@@ -58,10 +58,11 @@ pipeline {
 			    echo "Provisioning terraform"
 			    export AWS_ACCESS_KEY_ID="${env.AWS_ACCESS_KEY_ID"
 			    export AWS_SECRET_ACCESS_KEY="${env.AWS_SECRET_ACCESS_KEY_ID}"
-			    sh ""
+			    sh "cp /var/jenkins_home/workspace/terraform/* $WORKSPACE/"
+			    sh "terraform apply -auto-approve"
 			    echo "execute AWSCodeDeploy"
-          step([$class: 'AWSCodeDeployPublisher', applicationName: 'CodeDeploy', awsAccessKey: '${env.AWS_ACCESS_KEY_ID}', awsSecretKey: '${env.AWS_SECRET_ACCESS_KEY_ID}', 
-				  deploymentGroupAppspec: false, deploymentGroupName: 'codedeploygroup', 
+          step([$class: 'AWSCodeDeployPublisher', applicationName: 'CodeDeploy1', awsAccessKey: '${env.AWS_ACCESS_KEY_ID}', awsSecretKey: '${env.AWS_SECRET_ACCESS_KEY_ID}', 
+				  deploymentGroupAppspec: false, deploymentGroupName: 'codedeploygroup1', 
 				  deploymentMethod: 'CodeDeployDefault.AllAtOnce', includes: '**', proxyHost: '', 
 				  proxyPort: 0, region: 'us-east-1', s3bucket: 'aws-code-deploy-test-jenkins'])  
 		    
