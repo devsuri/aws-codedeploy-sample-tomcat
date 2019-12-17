@@ -9,6 +9,7 @@ pipeline {
     }
     tools {
     maven 'M2_HOME'
+    terraform 'Terraform'
     }
     stages {
         stage('Build') {
@@ -38,9 +39,10 @@ pipeline {
 			    if (env.RELEASE_SCOPE == "Shell")
 		    {
 			    echo "execute Shell"
-			   sshagent(['dev-server']) {
-		   sh "/var/jenkins_home/workspace/backupscript/backup.sh"
-                    sh "rsync -ivhr $WORKSPACE/target/SampleMavenTomcatApp.war -e 'ssh -o StrictHostKeyChecking=no' '${env.codedeployserver}':'/tmp/shell/'"
+			    sh "terraform -v"
+		//	   sshagent(['dev-server']) {
+		//   sh "/var/jenkins_home/workspace/backupscript/backup.sh"
+                //    sh "rsync -ivhr $WORKSPACE/target/SampleMavenTomcatApp.war -e 'ssh -o StrictHostKeyChecking=no' '${env.codedeployserver}':'/tmp/shell/'"
                     //sh "scp -o StrictHostKeyChecking=no -r $WORKSPACE/target/SampleMavenTomcatApp.war '${env.codedeployserver}':'/tmp/shell/'"
 				  // //sh "ssh -o StrictHostKeyChecking=no '${env.devsfws}' 'sudo chmod +x /usr/share/nginx/www/DevRubyWS/bin'"
                 }
