@@ -6,18 +6,16 @@ pipeline {
     }*/
     options {
     buildDiscarder(logRotator(numToKeepStr: '3'))
-	    ansiColor('xterm')
-    }
+	}
     tools {
     maven 'M2_HOME'
-    //terraform 'Terraform'
     }
+    
     stages {
         stage('Build') {
             steps {
 		    // Run the maven build
-		    
-                echo 'Clean Build'
+		    echo 'Clean Build'
 		sh 'mvn -B -DskipTests clean package'
             }
         }
@@ -28,76 +26,67 @@ pipeline {
                 echo 'Testing'
                 sh 'mvn test'
             }
-        }
-	stage("Release scope") {
+         }
+	    stage("Release scope") {
             steps {
                 script {
                     
                     env.RELEASE_SCOPE = input message: 'User input required', ok: 'Release!',
-                            parameters: [choice(name: 'RELEASE_SCOPE', choices: ['Shell','AWSCodeDeploy', 'AzureAppService'], description: 'What is the release scope?')]
+                    parameters: [choice(name: 'RELEASE_SCOPE', 
+                    choices: ['Shell','AWSCodeDeploy', 'AzureAppService'], 
+                    description: 'What is the release scope?')]
                
                 //echo "Release scope selected: ${env.RELEASE_SCOPE}"
 		    
-			    if (env.RELEASE_SCOPE == "Shell")
-		    {
-			    echo "execute Shell"
-			   // sh "terraform -v"
-			   // export AWS_ACCESS_KEY_ID="${env.AWS_ACCESS_KEY_ID"
-			   // export AWS_SECRET_ACCESS_KEY="${env.AWS_SECRET_ACCESS_KEY_ID}"
-			   // sh "terraform apply --auto-approve"
-			    ansiColor('xterm'){	
-			    sshagent(['dev-server']) {
-		   sh "/var/jenkins_home/workspace/backupscript/backup.sh"
-                    sh "rsync -ivhr $WORKSPACE/target/SampleMavenTomcatApp.war -e 'ssh -o StrictHostKeyChecking=no' '${env.codedeployserver}':'/tmp/shell/'"
-                    //sh "scp -o StrictHostKeyChecking=no -r $WORKSPACE/target/SampleMavenTomcatApp.war '${env.codedeployserver}':'/tmp/shell/'"
-				  // //sh "ssh -o StrictHostKeyChecking=no '${env.devsfws}' 'sudo chmod +x /usr/share/nginx/www/DevRubyWS/bin'"
-                }
-			    }}
+			    if (env.RELEASE_SCOPE == "Shell"){
+			        echo "execute Shell"
+			        sshagent(['dev-server']) {
+		                sh "/var/jenkins_home/workspace/backupscript/backup.sh"
+                                sh "rsync -ivhr $WORKSPACE/target/SampleMavenTomcatApp.war -e 'ssh -o StrictHostKeyChecking=no' '${env.codedeployserver}':'/tmp/shell/'"
+                            }
+                   }
 		    
 		    
-			    if (env.RELEASE_SCOPE == "AWSCodeDeploy")
-		    {
-			   
-			    echo "Provisioning terraform"
-			    //export AWS_ACCESS_KEY_ID="${env.AWS_ACCESS_KEY_ID}"
-			    //export AWS_SECRET_ACCESS_KEY="${env.AWS_SECRET_ACCESS_KEY_ID}"
-			    sh "cp /var/jenkins_home/workspace/terraform/* $WORKSPACE/"
-			    sh "terraform init"
-			    sh "terraform apply -auto-approve"
-			    echo "execute AWSCodeDeploy"
-          step([$class: 'AWSCodeDeployPublisher', applicationName: 'CodeDeploy1', awsAccessKey: '${env.AWS_ACCESS_KEY_ID}', awsSecretKey: '${env.AWS_SECRET_ACCESS_KEY_ID}', 
-				  deploymentGroupAppspec: false, deploymentGroupName: 'codedeploygroup1', 
-				  deploymentMethod: 'CodeDeployDefault.AllAtOnce', includes: '**', proxyHost: '', 
-				  proxyPort: 0, region: 'us-east-1', s3bucket: 'aws-code-deploy-test-jenkins'])  
-		    
-		    }
+			    if (env.RELEASE_SCOPE == "AWSCodeDeploy") {
+			        //provisioning Terraform for CodeDeploy
+                                echo "Provisioning terraform"
+			        //export AWS_ACCESS_KEY_ID="${env.AWS_ACCESS_KEY_ID}"
+			        //export AWS_SECRET_ACCESS_KEY="${env.AWS_SECRET_ACCESS_KEY_ID}"
+			        sh "cp /var/jenkins_home/workspace/terraform/* $WORKSPACE/"
+			        sh "terraform init"
+			        sh "terraform apply -auto-approve"
+			        echo "execute AWSCodeDeploy"
+                                //Publishing Artifacts through CodeDeploy
+                                step([$class: 'AWSCodeDeployPublisher', applicationName: 'CodeDeploy1', 
+                                awsAccessKey: '${env.AWS_ACCESS_KEY_ID}', awsSecretKey: '${env.AWS_SECRET_ACCESS_KEY_ID}', 
+				deploymentGroupAppspec: false, deploymentGroupName: 'codedeploygroup1', 
+				deploymentMethod: 'CodeDeployDefault.AllAtOnce', includes: '**', proxyHost: '', 
+		                proxyPort: 0, region: 'us-east-1', s3bucket: 'aws-code-deploy-test-jenkins'])  
+		            }
 			
-			if (env.RELEASE_SCOPE == "AzureAppService")
-		    {
-			    echo "execute AzureAppService"
-			   azureWebAppPublish appName: 'codedeploy-appservice', azureCredentialsId: 'yourAzureServicePrincipalName',  
-				   filePath: 'SampleMavenTomcatApp.war', publishType: 'file', resourceGroup: 'codedeploy', slotName: '', 
-				   sourceDirectory: 'target', targetDirectory: '/'
-                    
-		    }
-		}
-            }
-        }
-    
+			    if (env.RELEASE_SCOPE == "AzureAppService") {
+			        echo "execute AzureAppService"
+			        azureWebAppPublish appName: 'codedeploy-appservice', azureCredentialsId: 'yourAzureServicePrincipalName',  
+				filePath: 'SampleMavenTomcatApp.war', publishType: 'file', resourceGroup: 'codedeploy', slotName: '', 
+				sourceDirectory: 'target', targetDirectory: '/'
+                            }
+		     }
+               }
+          }
    }
 
     post {
         success {
             notifyBuild()
-            
-	}
+        }
 	    
         
-	 failure {
+	    failure {
             notifyBuild('ERROR')
-	  }
+	    }
     }
 }
+
 // Slack notification with status and code changes from git
 def notifyBuild(String buildStatus = 'SUCCESSFUL') {
     //buildStatus = buildStatus
@@ -119,7 +108,7 @@ def notifyBuild(String buildStatus = 'SUCCESSFUL') {
     }
 
     slackSend(color: colorCode, message: message)
-    //slackUploadFile filePath: '/var/jenkins_home/workspace/pipeline-jenkinstest/arachni_report.html.zip', initialComment:  'HEY HEY'
+    
 }
 
 // Fetching change set from Git
