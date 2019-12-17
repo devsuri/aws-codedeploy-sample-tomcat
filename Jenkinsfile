@@ -6,6 +6,7 @@ pipeline {
     }*/
     options {
     buildDiscarder(logRotator(numToKeepStr: '3'))
+	    ansiColor('xterm')
     }
     tools {
     maven 'M2_HOME'
@@ -15,6 +16,7 @@ pipeline {
         stage('Build') {
             steps {
 		    // Run the maven build
+		    
                 echo 'Clean Build'
 		sh 'mvn -B -DskipTests clean package'
             }
@@ -43,13 +45,14 @@ pipeline {
 			   // export AWS_ACCESS_KEY_ID="${env.AWS_ACCESS_KEY_ID"
 			   // export AWS_SECRET_ACCESS_KEY="${env.AWS_SECRET_ACCESS_KEY_ID}"
 			   // sh "terraform apply --auto-approve"
-			    	   sshagent(['dev-server']) {
+			    ansiColor('xterm'){	
+			    sshagent(['dev-server']) {
 		   sh "/var/jenkins_home/workspace/backupscript/backup.sh"
                     sh "rsync -ivhr $WORKSPACE/target/SampleMavenTomcatApp.war -e 'ssh -o StrictHostKeyChecking=no' '${env.codedeployserver}':'/tmp/shell/'"
                     //sh "scp -o StrictHostKeyChecking=no -r $WORKSPACE/target/SampleMavenTomcatApp.war '${env.codedeployserver}':'/tmp/shell/'"
 				  // //sh "ssh -o StrictHostKeyChecking=no '${env.devsfws}' 'sudo chmod +x /usr/share/nginx/www/DevRubyWS/bin'"
                 }
-		    }
+			    }}
 		    
 		    
 			    if (env.RELEASE_SCOPE == "AWSCodeDeploy")
