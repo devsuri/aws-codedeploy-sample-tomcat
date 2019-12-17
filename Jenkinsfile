@@ -9,7 +9,7 @@ pipeline {
     }
     tools {
     maven 'M2_HOME'
-    terraform 'Terraform'
+    //terraform 'Terraform'
     }
     stages {
         stage('Build') {
