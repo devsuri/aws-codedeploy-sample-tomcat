@@ -57,9 +57,9 @@ pipeline {
 			        sh "terraform apply -auto-approve"
 			        echo "execute AWSCodeDeploy"
                                 //Publishing Artifacts through CodeDeploy
-                                step([$class: 'AWSCodeDeployPublisher', applicationName: 'CodeDeploy1', 
+                                step([$class: 'AWSCodeDeployPublisher', applicationName: 'CodeDeploy', 
                                 awsAccessKey: '${env.AWS_ACCESS_KEY_ID}', awsSecretKey: '${env.AWS_SECRET_ACCESS_KEY_ID}', 
-				deploymentGroupAppspec: false, deploymentGroupName: 'codedeploygroup1', 
+				deploymentGroupAppspec: false, deploymentGroupName: 'codedeploygroup', 
 				deploymentMethod: 'CodeDeployDefault.AllAtOnce', includes: '**', proxyHost: '', 
 		                proxyPort: 0, region: 'us-east-1', s3bucket: 'aws-code-deploy-test-jenkins'])  
 		            }
