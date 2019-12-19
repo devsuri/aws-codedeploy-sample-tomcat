@@ -2,7 +2,7 @@
 pipeline {
     agent any
     /*parameters { 
-	    choice(name: 'CHOICES', choices: ['one', 'two', 'three'], description: 'Deployment Portion') 
+	   // choice(name: 'CHOICES', choices: ['one', 'two', 'three'], description: 'Deployment Portion') 
     }*/
     options {
     buildDiscarder(logRotator(numToKeepStr: '3'))
